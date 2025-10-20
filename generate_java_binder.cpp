@@ -920,7 +920,8 @@ static void GenerateMethods(const AidlInterface& iface, const AidlMethod& method
   transactCodeName += method.GetName();
 
   auto transactCode =
-      std::make_shared<Field>(STATIC | FINAL, std::make_shared<Variable>("int", transactCodeName));
+      std::make_shared<Field>(PUBLIC | STATIC | FINAL, std::make_shared<Variable>("int", transactCodeName));
+  transactCode->comment = "/** @hide */";
   transactCode->value =
       StringPrintf("(android.os.IBinder.FIRST_CALL_TRANSACTION + %d)", index);
   stubClass->elements.push_back(transactCode);
