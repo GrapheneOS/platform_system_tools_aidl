@@ -369,19 +369,21 @@ ProxyClass::ProxyClass(const AidlInterface* interfaceType, const Options& option
   if (interfaceType->IsDeprecated()) {
     this->annotations.push_back("@Deprecated");
   }
-  this->modifiers = PRIVATE | STATIC | FINAL;
+  this->modifiers = PUBLIC | STATIC;
+  this->comment = "/** @hide */";
   this->what = Class::CLASS;
   this->type = interfaceType->GetCanonicalName() + ".Stub.Proxy";
   this->interfaces.push_back(interfaceType->GetCanonicalName());
 
   // IBinder mRemote
   mRemote = std::make_shared<Variable>("android.os.IBinder", "mRemote");
-  this->elements.push_back(std::make_shared<Field>(PRIVATE, mRemote));
+  this->elements.push_back(std::make_shared<Field>(PROTECTED, mRemote));
 
   // Proxy()
   auto remote = std::make_shared<Variable>("android.os.IBinder", "remote");
   auto ctor = std::make_shared<Method>();
   ctor->name = "Proxy";
+  ctor->modifiers = PROTECTED;
   ctor->statements = std::make_shared<StatementBlock>();
   ctor->parameters.push_back(remote);
   ctor->statements->Add(std::make_shared<Assignment>(mRemote, remote));
